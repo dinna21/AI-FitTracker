@@ -1,21 +1,18 @@
-import {createContext} from 'react'
+import { createContext } from 'react';
 
-interface ThemContextType {
+interface ThemeContextType {
   theme: string;
   toggleTheme: () => void;
 }
 
-
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 const Dashboard = () => {
   return (
     <div>
-      
+      {/* Dashboard content goes here */}
     </div>
-  )
-}
+  );
+};
 
-const ThemeContext = createContext<ThemContextType | undefined>(undefined);
-
-export {ThemeContext, Dashboard}
-
+export { ThemeContext, Dashboard };
