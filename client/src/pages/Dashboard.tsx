@@ -1,4 +1,5 @@
 import { useMemo } from "react"
+import CaloriesChart from "../components/CaloriesChart"
 import { useAppContext } from "../context/AppContext"
 import {
   Flame, Utensils, Zap, TrendingUp, Plus,
@@ -138,7 +139,6 @@ const Dashboard = () => {
   const weekTotalBurned = weekStats.reduce((s, d) => s + d.burned,   0)
   const weekTotalMeals  = weekStats.reduce((s, d) => s + d.meals,    0)
   const weekTotalActive = weekStats.reduce((s, d) => s + d.active,   0)
-  const maxCal          = Math.max(...weekStats.map((d) => d.calories), 1)
 
   /* targets */
   const targets = useMemo(() => {
@@ -304,31 +304,8 @@ const Dashboard = () => {
             <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium -mt-0.5">Last 7 days</span>
           </div>
 
-          {/* Bar chart */}
-          <div className="flex items-end gap-1.5 h-[72px] mb-1">
-            {weekStats.map((d) => {
-              const hPct = maxCal > 0 ? Math.max((d.calories / maxCal) * 100, 5) : 5
-              return (
-                <div key={d.day} className="flex-1 flex flex-col items-center gap-1.5">
-                  <div className="w-full flex items-end rounded-t-md overflow-hidden" style={{ height: "56px" }}>
-                    <div
-                      className={`w-full rounded-t-md transition-all duration-700 ${
-                        d.isToday
-                          ? "bg-emerald-500"
-                          : d.calories > 0
-                          ? "bg-slate-200 dark:bg-slate-700"
-                          : "bg-slate-100 dark:bg-slate-800"
-                      }`}
-                      style={{ height: `${hPct}%` }}
-                    />
-                  </div>
-                  <span className={`text-[10px] font-semibold ${d.isToday ? "text-emerald-500" : "text-slate-400 dark:text-slate-500"}`}>
-                    {d.day}
-                  </span>
-                </div>
-              )
-            })}
-          </div>
+          {/* Recharts bar chart — Intake vs Burn per day */}
+          <CaloriesChart />
 
           {/* Week summary 2×2 */}
           <div className="grid grid-cols-2 gap-2.5 mt-4">
