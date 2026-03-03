@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAppContext } from "../context/AppContext"
-import { Toaster } from "react-hot-toast"
 import toast from "react-hot-toast"
 import {
   User, Dumbbell, Target, ChevronRight, ChevronLeft,
@@ -76,7 +75,6 @@ const Onboarding = () => {
 
   return (
     <div>
-      <Toaster />
       <div className="onboarding-container min-h-screen bg-slate-50 dark:bg-slate-900 flex items-start justify-center">
         <div className="onboarding-wrapper w-full max-w-md px-4 py-8 flex flex-col min-h-screen">
 

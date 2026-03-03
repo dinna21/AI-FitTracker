@@ -10,7 +10,15 @@ createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
     <ThemeProvider>
         <AppProvider>
-            <Toaster position="top-center" />
+            <Toaster 
+                position="top-center"
+                toastOptions={{
+                    duration: 3000,
+                    removeDelay: 1000,
+                    success: { duration: 3000 },
+                    error: { duration: 4000 },
+                }}
+            />
             <App />
         </AppProvider>
     </ThemeProvider>

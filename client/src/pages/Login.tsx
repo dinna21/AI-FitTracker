@@ -87,9 +87,7 @@ const Login = () => {
 
   return (
     <>
-    <Toaster/>
     <div className="login-page-container">
-      <Toaster position="top-center" />
       <div className="login-form">
         <h2 className="text-3xl dark:text-white font-medium text-gray-900 mb-2">
           {state === 'login' ? 'Sign In' : 'Sign Up'}
