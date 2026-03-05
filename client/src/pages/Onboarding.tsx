@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAppContext } from "../context/AppContext"
 import toast from "react-hot-toast"
+import mockApi from "../assets/mockApi"
 import {
   User, Dumbbell, Target, ChevronRight, ChevronLeft,
   Activity, Flame, Zap, Wind, Heart, CheckCircle2,
@@ -30,7 +31,7 @@ const goalOptions = [
 const Onboarding = () => {
   const [step, setStep] = useState(1)
   const navigate = useNavigate()
-  const { setOnboardingCompleted } = useAppContext()
+  const { setOnboardingCompleted, setUser } = useAppContext()
   
   const [form, setForm] = useState({
     age: "",
@@ -61,14 +62,38 @@ const Onboarding = () => {
 
   const back = () => setStep((s) => s - 1)
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!form.goal) {
       toast.error("Please select a goal")
       return
     }
-    toast.success("Profile saved! Welcome to FitTrack")
-    setOnboardingCompleted(true)
-    navigate("/")
+
+    const goalMap: Record<string, string> = {
+      "Lose Weight": "lose",
+      "Maintain Weight": "maintain",
+      "Gain Muscle": "gain",
+    }
+
+    try {
+      const payload = {
+        age: Number(form.age),
+        weight: Number(form.weight),
+        height: Number(form.height),
+        gender: form.gender,
+        activityLevel: form.activityLevel,
+        goal: (goalMap[form.goal] ?? "maintain") as "lose" | "maintain" | "gain",
+        dailyCalorieIntake: form.dailyCalorieIntake,
+        dailyCalorieBurn: form.dailyCalorieBurn,
+      }
+
+      const { data } = await mockApi.user.update("", payload)
+      setUser(data)
+      toast.success("Profile saved! Welcome to FitTrack")
+      setOnboardingCompleted(true)
+      navigate("/")
+    } catch {
+      toast.error("Failed to save profile")
+    }
   }
 
   const progress = ((step - 1) / (steps.length - 1)) * 100
