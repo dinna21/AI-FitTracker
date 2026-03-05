@@ -71,7 +71,7 @@ function StatRow({ icon: Icon, label, value, iconBg, iconColor }: {
    PROFILE PAGE
 ───────────────────────────────────────────────────── */
 const Profile = () => {
-  const { user, setUser, allFoodLogs, allActivityLogs } = useAppContext()
+  const { user, setUser, allFoodLogs, allActivityLogs, logout } = useAppContext()
   const navigate = useNavigate()
 
   const [editing, setEditing]     = useState(false)
@@ -159,9 +159,7 @@ const Profile = () => {
   const handleLogout = async () => {
     setLoggingOut(true)
     try {
-      await mockApi.auth.login({ identifier: "" }) // replaced logout with login as logout doesn't exist
-      setUser(null)
-      navigate("/login")
+      logout()
       toast.success("Logged out")
     } catch {
       toast.error("Logout failed")
