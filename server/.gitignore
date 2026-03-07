@@ -1,0 +1,90 @@
+############################
+# OS
+############################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+############################
+# Node
+############################
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+.npm/
+
+############################
+# Build outputs
+############################
+dist/
+build/
+.cache/
+.tmp/
+
+############################
+# Strapi specific
+############################
+# Built admin panel
+.cache/
+dist/
+build/
+
+# Strapi exports
+exports/
+
+# Strapi database (SQLite)
+.tmp/
+*.db
+*.db-shm
+*.db-wal
+database/migrations/.gitkeep
+
+# Strapi uploads (user-uploaded files)
+public/uploads/*
+!public/uploads/.gitkeep
+
+############################
+# Environment & secrets
+############################
+.env
+.env.local
+.env.*.local
+.env.production
+.env.staging
+# Keep .env.example (template) in source control
+!.env.example
+
+############################
+# IDE / Editor
+############################
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+############################
+# Logs
+############################
+logs/
+*.log
+
+############################
+# TypeScript
+############################
+*.tsbuildinfo
+
+.env.local
+
+.env.example
+
+.gitkeep
