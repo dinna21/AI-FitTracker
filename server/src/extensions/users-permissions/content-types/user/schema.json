@@ -83,6 +83,16 @@
     },
     "dailyCalorieBurn": {
       "type": "integer"
+    },
+    "onboardingCompleted": {
+      "type": "boolean",
+      "default": false
+    },
+    "food_logs": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::food-log.food-log",
+      "mappedBy": "users_permissions_user"
     }
   }
 }
