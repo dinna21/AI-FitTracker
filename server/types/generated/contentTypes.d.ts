@@ -430,6 +430,40 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiActivityLogActivityLog extends Struct.CollectionTypeSchema {
+  collectionName: 'activity_logs';
+  info: {
+    displayName: 'Activity Log';
+    pluralName: 'activity-logs';
+    singularName: 'activity-log';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    calories: Schema.Attribute.Integer;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    duration: Schema.Attribute.Integer;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::activity-log.activity-log'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    users_permissions_user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+  };
+}
+
 export interface ApiFoodLogFoodLog extends Struct.CollectionTypeSchema {
   collectionName: 'food_logs';
   info: {
@@ -923,6 +957,10 @@ export interface PluginUsersPermissionsUser
     draftAndPublish: false;
   };
   attributes: {
+    activity_logs: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::activity-log.activity-log'
+    >;
     age: Schema.Attribute.Integer;
     blocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     confirmationToken: Schema.Attribute.String & Schema.Attribute.Private;
@@ -984,6 +1022,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::activity-log.activity-log': ApiActivityLogActivityLog;
       'api::food-log.food-log': ApiFoodLogFoodLog;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
