@@ -66,5 +66,30 @@ export default factories.createCoreController('api::activity-log.activity-log', 
         }
 
         return entry;
+    },
+
+    async delete(ctx) {
+        const user = ctx.state.user;
+        const { id } = ctx.params;
+
+        if(!user) {
+            return ctx.unauthorized('You must be logged in to delete activity logs');
+        }
+
+        const entry = await strapi.entityService.findOne('api::activity-log.activity-log', id, {
+            populate: ['users_permissions_user']
+        }) as PopulatedActivityLog | null;
+
+        if(!entry) {
+            return ctx.notFound('Activity log entry not found');
+        }
+
+        if(entry.users_permissions_user?.id !== user.id) {
+            return ctx.unauthorized('You can only delete your own activity logs');
+        }
+
+        await strapi.entityService.delete('api::activity-log.activity-log', id);
+
+        return { message: 'Activity log entry deleted successfully' };
     }
 }));

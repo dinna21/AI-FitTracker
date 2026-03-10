@@ -66,5 +66,30 @@ export default factories.createCoreController('api::food-log.food-log', ({strapi
         }
 
         return entry;
+    },
+
+        async delete(ctx) {
+        const user = ctx.state.user;
+        const { id } = ctx.params;
+
+        if(!user) {
+            return ctx.unauthorized('You must be logged in to delete food logs');
+        }
+
+        const entry = await strapi.entityService.findOne('api::food-log.food-log', id, {
+            populate: ['users_permissions_user']
+        }) as PopulatedFoodLog | null;
+
+        if(!entry) {
+            return ctx.notFound('Food log entry not found');
+        }
+
+        if(entry.users_permissions_user?.id !== user.id) {
+            return ctx.unauthorized('You can only delete your own food logs');
+        }
+
+        await strapi.entityService.delete('api::food-log.food-log', id);
+
+        return { message: 'Food log entry deleted successfully' };
     }
 }));
