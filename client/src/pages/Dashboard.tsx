@@ -239,15 +239,11 @@ const Dashboard = () => {
         <div className="relative z-10">
           <div className="flex items-start justify-between mb-5">
             <div>
-              <p className="text-emerald-200/70 text-[11px] font-semibold tracking-widest uppercase mb-1.5 flex items-center gap-2">
-                {greeting}
-                <span className="inline-flex items-center gap-1 bg-white/15 border border-white/15 text-white/80 text-[9px] font-bold px-2 py-0.5 rounded-full">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" />
-                  Today
-                </span>
+              <p className="text-emerald-200/70 text-[11px] font-semibold tracking-widest uppercase mb-1.5">
+                Welcome back
               </p>
               <h1 className="text-white text-[1.75rem] font-bold tracking-tight leading-none">
-                {displayName}
+                Hi there! 👋 {displayName}
               </h1>
               <p className="text-emerald-100/50 text-xs mt-2 font-medium">
                 {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
