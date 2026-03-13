@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { type ActivityEntry, type Credentials, type FoodEntry, type User } from "../types";
-import mockApi from "../assets/mockApi";
+import api from "../assets/api";
 
 interface AppContextType {
   user: User | null;
@@ -30,40 +30,58 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [allActivityLogs, setAllActivityLogs] = useState<ActivityEntry[]>([]);
 
     const signup = async (credentials: Credentials) => {
-        const { data } = await mockApi.auth.register(credentials);
-        setUser(data.user);
-        if (data?.user.age && data?.user?.weight && data?.user?.goal) {
+        const { data } = await api.auth.register(credentials);
+        localStorage.setItem('token', data.jwt);
+        // Fetch full profile (custom fields like onboardingCompleted, age, goal)
+        const { data: fullUser } = await api.user.me();
+        setUser({ ...fullUser, token: data.jwt } as any);
+        if (fullUser?.onboardingCompleted || (fullUser?.age && fullUser?.weight && fullUser?.goal)) {
             setOnboardingCompleted(true);
         }
-        localStorage.setItem('token', data.jwt);
+        await fetchFoodLogs();
+        await fetchActivityLogs();
     }
 
     const login = async (credentials: Credentials) => {
-        const { data } = await mockApi.auth.login(credentials);
-        setUser({ ...data.user, token: data.jwt });
-        if (data?.user.age && data?.user?.weight && data?.user?.goal) {
+        const { data } = await api.auth.login(credentials);
+        localStorage.setItem('token', data.jwt);
+        // Fetch full profile (custom fields like onboardingCompleted, age, goal)
+        const { data: fullUser } = await api.user.me();
+        setUser({ ...fullUser, token: data.jwt } as any);
+        if (fullUser?.onboardingCompleted || (fullUser?.age && fullUser?.weight && fullUser?.goal)) {
             setOnboardingCompleted(true);
         }
-        localStorage.setItem('token', data.jwt);
+        await fetchFoodLogs();
+        await fetchActivityLogs();
     }
 
     const fetchUser = async (token: string) => {
-        const { data } = await mockApi.user.me();
-        setUser({ ...data, token });
-        if (data?.age && data?.weight && data?.goal) {
-            setOnboardingCompleted(true);
+        try {
+            const { data } = await api.user.me();
+            setUser({ ...data, token } as any);
+            if (data?.onboardingCompleted || (data?.age && data?.weight && data?.goal)) {
+                setOnboardingCompleted(true);
+            }
+        } catch {
+            // Invalid/expired token — clear it so user sees login screen
+            localStorage.removeItem('token');
+        } finally {
+            setIsUserFetched(true);
         }
-        setIsUserFetched(true);
     }
 
     const fetchFoodLogs = async () => {
-        const { data } = await mockApi.foodLogs.list();
-        setAllFoodLogs(data);
+        try {
+            const { data } = await api.foodLogs.list();
+            setAllFoodLogs(data as any);
+        } catch { /* non-fatal — dashboard falls back to empty state */ }
     }
 
     const fetchActivityLogs = async () => {
-        const { data } = await mockApi.activityLogs.list();
-        setAllActivityLogs(data);
+        try {
+            const { data } = await api.activityLogs.list();
+            setAllActivityLogs(data as any);
+        } catch { /* non-fatal */ }
     }
 
     const logout = () => {
