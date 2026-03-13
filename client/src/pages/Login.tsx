@@ -2,7 +2,7 @@ import { AtSignIcon, LockIcon, UserIcon, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const navigate = useNavigate();
