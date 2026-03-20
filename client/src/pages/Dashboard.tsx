@@ -10,8 +10,6 @@ import {
 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import {
-  dummyFoodLogs,
-  dummyActivityLogs,
   getMotivationalMessage,
   goalLabels,
   ageRanges,
@@ -160,8 +158,8 @@ const Dashboard = () => {
 
   const today = new Date().toISOString().split("T")[0]
 
-  const foodLogs     = allFoodLogs.length     ? allFoodLogs     : dummyFoodLogs
-  const activityLogs = allActivityLogs.length ? allActivityLogs : dummyActivityLogs
+  const foodLogs     = allFoodLogs
+  const activityLogs = allActivityLogs
 
   const todayFood     = foodLogs.filter((f) => f.date === today)
   const todayActivity = activityLogs.filter((a) => a.date === today)
@@ -214,9 +212,6 @@ const Dashboard = () => {
   const goalLabel   = goalLabels[(user?.goal as keyof typeof goalLabels) ?? "maintain"]
   const displayName = user?.username ?? "there"
 
-  const hour     = new Date().getHours()
-  const greeting = hour < 5 ? "Good night" : hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening"
-
   const intakePct = (caloriesConsumed / targets.intake) * 100
   const burnPct   = (caloriesBurned   / targets.burn)   * 100
 
@@ -227,11 +222,9 @@ const Dashboard = () => {
   const activeDaysThisWeek = weekStats.filter(d => d.calories > 0 || d.burned > 0).length
 
   return (
-    <div className="page-container">
-
+    <div className="page-container bg-slate-950 text-white">
       {/* ══════ HEADER ══════ */}
-      <div className="dashboard-header relative overflow-hidden">
-        {/* decorative blobs */}
+      <div className="relative overflow-hidden rounded-b-[2.25rem] bg-[radial-gradient(circle_at_top_right,_#34d399_0%,_#10b981_45%,_#047857_100%)] px-5 pt-10 pb-12">
         <div className="absolute -top-16 -right-16 w-56 h-56 bg-white/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 -left-8 w-40 h-40 bg-emerald-300/15 rounded-full blur-2xl pointer-events-none" />
         <div className="absolute bottom-4 right-4 w-28 h-28 bg-teal-300/10 rounded-full blur-2xl pointer-events-none" />
@@ -242,15 +235,14 @@ const Dashboard = () => {
               <p className="text-emerald-200/70 text-[11px] font-semibold tracking-widest uppercase mb-1.5">
                 Welcome back
               </p>
-              <h1 className="text-white text-[1.75rem] font-bold tracking-tight leading-none">
+              <h1 className="text-white text-[1.7rem] font-bold tracking-tight leading-none">
                 Hi there! 👋 {displayName}
               </h1>
-              <p className="text-emerald-100/50 text-xs mt-2 font-medium">
+              <p className="text-emerald-100/60 text-xs mt-2 font-medium">
                 {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
               </p>
             </div>
 
-            {/* Avatar + active-days badge */}
             <div className="flex flex-col items-end gap-2">
               <div className="w-11 h-11 rounded-2xl bg-white/15 border border-white/20 flex items-center justify-center shrink-0 backdrop-blur-sm">
                 <span className="text-white font-bold text-base">
@@ -268,7 +260,6 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Goal pill */}
           <div className="flex items-center gap-2 mb-3.5">
             <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold bg-white/12 text-white px-3 py-1.5 rounded-full border border-white/15">
               <Target size={10} />
@@ -276,119 +267,46 @@ const Dashboard = () => {
             </span>
           </div>
 
-          {/* Motivation */}
           <div className="bg-white/10 border border-white/10 rounded-xl px-4 py-3 flex items-center gap-3">
             <div className="w-7 h-7 rounded-lg bg-white/15 flex items-center justify-center shrink-0">
               <Activity size={14} className="text-white" />
             </div>
-            <p className="text-white/85 text-sm leading-snug">{motivation.text}</p>
-          </div>
-
-          {/* Today's quick-stats pill strip */}
-          <div className="flex items-center gap-2 mt-3.5 flex-wrap">
-            <div className="flex items-center gap-1.5 bg-white/10 border border-white/10 rounded-full px-3 py-1.5">
-              <Utensils size={9} className="text-emerald-300" />
-              <span className="text-[11px] text-white/80 font-semibold">{caloriesConsumed} kcal in</span>
-            </div>
-            <div className="flex items-center gap-1.5 bg-white/10 border border-white/10 rounded-full px-3 py-1.5">
-              <Flame size={9} className="text-orange-300" />
-              <span className="text-[11px] text-white/80 font-semibold">{caloriesBurned} kcal out</span>
-            </div>
-            <div className="flex items-center gap-1.5 bg-white/10 border border-white/10 rounded-full px-3 py-1.5">
-              <NetIcon size={9} className="text-white/80" />
-              <span className="text-[11px] text-white/80 font-semibold">{Math.abs(netCalories)} net</span>
-            </div>
+            <p className="text-white/90 text-sm leading-snug">{motivation.text}</p>
           </div>
         </div>
       </div>
 
       {/* ══════ CONTENT ══════ */}
       <motion.div
-        className="px-4 pt-5 pb-8 space-y-4 lg:grid lg:grid-cols-2 lg:gap-5 lg:space-y-0 lg:px-6 lg:max-w-5xl lg:mx-auto lg:pt-6"
+        className="px-4 -mt-4 pb-24 space-y-4 max-w-2xl mx-auto"
         variants={containerVariants}
         initial="hidden"
         animate="show"
       >
-
-        {/* ── TODAY'S SUMMARY ── */}
-        <motion.div variants={cardVariants} className="lg:col-span-2">
-          <Card className="p-5">
+        {/* ── SUMMARY CARD (dark surface like screenshot) ── */}
+        <motion.div variants={cardVariants}>
+          <div className="relative z-10 rounded-2xl bg-slate-900/95 border border-slate-800 shadow-lg p-5">
             <div className="flex items-center justify-between mb-4">
-              <Label icon={Calendar} text="Today's Summary" />
+              <Label icon={Calendar} text="Today's Summary" iconClass="text-slate-400" />
               <StatusBadge pct={intakePct} over={caloriesConsumed > targets.intake} />
             </div>
 
-            {/* Dual-ring hero */}
-            <div className="flex items-center justify-around py-5 mb-5 bg-slate-50 dark:bg-slate-800/40 rounded-2xl">
-              {/* Intake ring */}
-              <div className="flex flex-col items-center gap-2">
-                <div className="relative">
-                  <Ring value={caloriesConsumed} max={targets.intake} size={84} strokeW={7} color="#10b981" />
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <span className="text-sm font-bold text-slate-800 dark:text-white">{Math.round(intakePct)}%</span>
-                  </div>
-                </div>
-                <div className="text-center">
-                  <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">Intake</p>
-                  <p className="text-xs font-bold text-emerald-500">
-                    {caloriesConsumed} <span className="text-[9px] font-normal text-slate-400">kcal</span>
-                  </p>
-                </div>
-              </div>
-
-              {/* Net center */}
-              <div className="flex flex-col items-center gap-1 px-2">
-                <span className={`text-2xl font-bold tabular-nums leading-none ${
-                  netCalories > targets.intake * 0.2 ? "text-rose-500"
-                  : netCalories < 0 ? "text-emerald-500"
-                  : "text-slate-700 dark:text-slate-200"
-                }`}>
-                  {Math.abs(netCalories)}
-                </span>
-                <span className="text-[10px] text-slate-400 font-medium">net kcal</span>
-                <span className={`text-[10px] font-bold flex items-center gap-0.5 ${
-                  netCalories > 0 ? "text-rose-400" : netCalories < 0 ? "text-emerald-500" : "text-slate-400"
-                }`}>
-                  <NetIcon size={9} />
-                  {netCalories > 0 ? "surplus" : netCalories < 0 ? "deficit" : "balanced"}
-                </span>
-              </div>
-
-              {/* Burn ring */}
-              <div className="flex flex-col items-center gap-2">
-                <div className="relative">
-                  <Ring value={caloriesBurned} max={targets.burn} size={84} strokeW={7} color="#f97316" />
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <span className="text-sm font-bold text-slate-800 dark:text-white">{Math.round(burnPct)}%</span>
-                  </div>
-                </div>
-                <div className="text-center">
-                  <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">Burned</p>
-                  <p className="text-xs font-bold text-orange-500">
-                    {caloriesBurned} <span className="text-[9px] font-normal text-slate-400">kcal</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-
             <div className="space-y-4">
-              {/* Calories In */}
               <div>
-                <div className="flex items-center justify-between mb-1.5">
+                <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center">
-                      <Utensils size={11} className="text-emerald-600 dark:text-emerald-400" />
+                    <div className="w-7 h-7 rounded-lg bg-emerald-500/15 flex items-center justify-center">
+                      <Utensils size={12} className="text-emerald-400" />
                     </div>
-                    <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">Calories In</span>
+                    <span className="text-xs font-semibold text-slate-200">Calories Consumed</span>
                   </div>
-                  <span className="text-xs text-slate-400 dark:text-slate-500">
-                    <span className="font-bold text-slate-700 dark:text-slate-200">{caloriesConsumed}</span>
-                    {" / "}{targets.intake} kcal
-                  </span>
+                  <div className="text-xs text-slate-400">
+                    <span className="text-slate-200 font-bold">{caloriesConsumed}</span> / {targets.intake}
+                  </div>
                 </div>
                 <Bar pct={intakePct} color="bg-emerald-500" over={caloriesConsumed > targets.intake} />
                 <div className="flex justify-between mt-1">
-                  <span className={`text-[11px] font-semibold ${caloriesConsumed > targets.intake ? "text-rose-500" : "text-emerald-500"}`}>
+                  <span className="text-[11px] text-emerald-400">
                     {caloriesConsumed > targets.intake
                       ? `${caloriesConsumed - targets.intake} kcal over`
                       : `${targets.intake - caloriesConsumed} kcal remaining`}
@@ -397,73 +315,41 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* Calories Burned */}
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
+              <div className="pt-2 border-t border-slate-800">
+                <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-lg bg-orange-50 dark:bg-orange-500/10 flex items-center justify-center">
-                      <Flame size={11} className="text-orange-500" />
+                    <div className="w-7 h-7 rounded-lg bg-orange-500/15 flex items-center justify-center">
+                      <Flame size={12} className="text-orange-400" />
                     </div>
-                    <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">Calories Burned</span>
+                    <span className="text-xs font-semibold text-slate-200">Calories Burned</span>
                   </div>
-                  <span className="text-xs text-slate-400 dark:text-slate-500">
-                    <span className="font-bold text-slate-700 dark:text-slate-200">{caloriesBurned}</span>
-                    {" / "}{targets.burn} kcal
-                  </span>
+                  <div className="text-xs text-slate-400">
+                    <span className="text-slate-200 font-bold">{caloriesBurned}</span> / {targets.burn}
+                  </div>
                 </div>
                 <Bar pct={burnPct} color="bg-orange-500" />
                 <div className="flex justify-between mt-1">
-                  <span className="text-[11px] font-semibold text-orange-500">
-                    {caloriesBurned >= targets.burn ? "Goal reached 🎉" : `${targets.burn - caloriesBurned} kcal to go`}
+                  <span className="text-[11px] text-orange-400">
+                    {caloriesBurned >= targets.burn ? "Goal reached" : `${targets.burn - caloriesBurned} kcal to go`}
                   </span>
                   <span className="text-[11px] text-slate-400">{Math.round(burnPct)}%</span>
                 </div>
               </div>
-
-              {/* Net strip */}
-              <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl px-4 py-3">
-                <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${netCalories > 0 ? "bg-blue-50 dark:bg-blue-500/10" : "bg-emerald-50 dark:bg-emerald-500/10"}`}>
-                  <NetIcon size={13} className={netCalories > 0 ? "text-blue-500" : "text-emerald-500"} />
-                </div>
-                <span className="text-xs font-medium text-slate-500 dark:text-slate-400 flex-1">Net Calories</span>
-                <span className={`text-sm font-bold ${netCalories > targets.intake ? "text-rose-500" : "text-slate-700 dark:text-slate-200"}`}>
-                  {netCalories} <span className="text-[10px] font-normal text-slate-400">kcal</span>
-                </span>
-              </div>
             </div>
-
-            {/* Stat trio */}
-            <div className="grid grid-cols-3 gap-2.5 mt-5">
-              {[
-                { label: "Meals",      value: todayFood.length,     icon: Utensils, color: "text-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-500/10" },
-                { label: "Active min", value: activeMinutes,         icon: Zap,      color: "text-orange-500", bg: "bg-orange-50 dark:bg-orange-500/10"   },
-                { label: "Workouts",   value: todayActivity.length, icon: Activity, color: "text-violet-500", bg: "bg-violet-50 dark:bg-violet-500/10"   },
-              ].map(({ label, value, icon: Icon, color, bg }) => (
-                <div key={label} className={`${bg} rounded-xl py-3.5 px-2 flex flex-col items-center gap-1.5`}>
-                  <Icon size={14} className={color} />
-                  <span className="text-lg font-bold text-slate-800 dark:text-white leading-none">{value}</span>
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400 text-center leading-tight">{label}</span>
-                </div>
-              ))}
-            </div>
-          </Card>
+          </div>
         </motion.div>
 
         {/* ── THIS WEEK ── */}
-        <motion.div variants={cardVariants} className="lg:col-span-2">
-          <Card className="p-5">
+        <motion.div variants={cardVariants}>
+          <Card className="p-4 sm:p-5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
             <div className="flex items-start justify-between mb-3">
               <Label icon={BarChart3} text="This Week" iconClass="text-violet-400" />
               <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium -mt-0.5">Last 7 days</span>
             </div>
 
-            {/* 7-day dot strip */}
             <WeekDayDots weekStats={weekStats} />
-
-            {/* Recharts bar chart */}
             <CaloriesChart />
 
-            {/* Week summary 2×2 */}
             <div className="grid grid-cols-2 gap-2.5 mt-4">
               {[
                 { label: "Total Calories", value: weekTotalCal.toLocaleString(),    unit: "kcal",  icon: Utensils, color: "text-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-500/10" },
@@ -496,53 +382,9 @@ const Dashboard = () => {
           </Card>
         </motion.div>
 
-        {/* ── BMI ── */}
-        {bmiVal && bmiCat && (
-          <motion.div variants={cardVariants}>
-            <Card className="p-5">
-              <Label icon={Heart} text="BMI" iconClass="text-rose-400" />
-
-              <div className="flex items-center gap-4 mb-5">
-                <div className="relative shrink-0">
-                  <Ring value={bmiVal - 10} max={30} size={88} color={bmiCat.fill} />
-                  <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                    <span className="text-xl font-bold text-slate-800 dark:text-white leading-none">{bmiVal}</span>
-                  </div>
-                </div>
-                <div>
-                  <p className={`text-base font-bold ${bmiCat.color}`}>{bmiCat.label}</p>
-                  <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 leading-relaxed">
-                    Healthy range<br />
-                    <span className="font-semibold text-slate-500 dark:text-slate-400">18.5 – 24.9</span>
-                  </p>
-                </div>
-              </div>
-
-              {/* Gradient scale */}
-              <div className="relative">
-                <div className="h-2.5 rounded-full overflow-hidden flex">
-                  <div className="flex-1 bg-sky-400" />
-                  <div className="flex-1 bg-emerald-400" />
-                  <div className="flex-1 bg-amber-400" />
-                  <div className="flex-1 bg-rose-400" />
-                </div>
-                <div
-                  className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white dark:bg-slate-900 border-2 shadow-md transition-all duration-700"
-                  style={{ left: `calc(${bmiPct}% - 8px)`, borderColor: bmiCat.fill }}
-                />
-              </div>
-              <div className="flex justify-between mt-1.5">
-                {["Under", "Normal", "Over", "Obese"].map((l) => (
-                  <span key={l} className="text-[9px] text-slate-400 dark:text-slate-500 font-medium">{l}</span>
-                ))}
-              </div>
-            </Card>
-          </motion.div>
-        )}
-
         {/* ── PROFILE ── */}
         <motion.div variants={cardVariants}>
-          <Card className="p-5">
+          <Card className="p-4 sm:p-5">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-1.5">
                 <User size={13} className="text-amber-400" />
@@ -580,8 +422,8 @@ const Dashboard = () => {
         </motion.div>
 
         {/* ── TODAY'S MEALS ── */}
-        <motion.div variants={cardVariants} className="lg:col-span-2">
-          <Card className="p-5">
+        <motion.div variants={cardVariants}>
+          <Card className="p-4 sm:p-5">
             <div className="flex items-start justify-between mb-4">
               <Label icon={Utensils} text="Today's Meals" />
               <button
@@ -635,8 +477,8 @@ const Dashboard = () => {
         </motion.div>
 
         {/* ── RECENT ACTIVITY ── */}
-        <motion.div variants={cardVariants} className="lg:col-span-2">
-          <Card className="p-5">
+        <motion.div variants={cardVariants}>
+          <Card className="p-4 sm:p-5">
             <div className="flex items-start justify-between mb-4">
               <Label icon={Activity} text="Recent Activity" iconClass="text-orange-400" />
               <button
@@ -677,7 +519,6 @@ const Dashboard = () => {
             )}
           </Card>
         </motion.div>
-
       </motion.div>
     </div>
   )
