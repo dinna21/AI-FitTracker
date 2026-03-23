@@ -20,6 +20,9 @@
     "calories": {
       "type": "integer"
     },
+    "date": {
+      "type": "date"
+    },
     "users_permissions_user": {
       "type": "relation",
       "relation": "manyToOne",

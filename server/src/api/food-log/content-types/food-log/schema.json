@@ -18,7 +18,7 @@
       "type": "integer"
     },
     "date": {
-      "type": "datetime"
+      "type": "date"
     },
     "mealType": {
       "type": "string"
