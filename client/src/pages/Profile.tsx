@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useAppContext } from "../context/AppContext"
-import mockApi from "../assets/mockApi"
+import api from "../assets/api"
 import {
   User, Scale, Ruler, Calendar, Target,
   Utensils, Activity, LogOut, Edit3, Save,
@@ -9,7 +9,6 @@ import {
 } from "lucide-react"
 import toast from "react-hot-toast"
 import { goalLabels, ageRanges } from "../assets/assets"
-import { useNavigate } from "react-router-dom"
 
 /* ─── helpers ── */
 function calcBMI(weight: number, heightCm: number) {
@@ -72,8 +71,6 @@ function StatRow({ icon: Icon, label, value, iconBg, iconColor }: {
 ───────────────────────────────────────────────────── */
 const Profile = () => {
   const { user, setUser, allFoodLogs, allActivityLogs, logout } = useAppContext()
-  const navigate = useNavigate()
-
   const [editing, setEditing]     = useState(false)
   const [saving, setSaving]       = useState(false)
   const [loggingOut, setLoggingOut] = useState(false)
@@ -132,8 +129,8 @@ const Profile = () => {
         dailyCalorieIntake:form.dailyCalorieIntake ? Number(form.dailyCalorieIntake) : undefined,
         dailyCalorieBurn:  form.dailyCalorieBurn   ? Number(form.dailyCalorieBurn)   : undefined,
       }
-      const { data } = await mockApi.user.update(user!.documentId ?? "", payload)
-      setUser(data)
+      const { data } = await api.user.update(String(user!.id ?? ''), payload as Record<string, unknown>)
+      setUser({ ...user, ...data } as any)
       setEditing(false)
       toast.success("Profile updated")
     } catch {
@@ -239,6 +236,7 @@ const Profile = () => {
                   </div>
 
                   <button
+                    type="button"
                     onClick={() => setEditing(true)}
                     className="mt-5 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-sm font-semibold transition-all active:scale-95"
                   >
@@ -272,7 +270,7 @@ const Profile = () => {
                       <div>
                         <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">Goal</label>
                         <div className="relative">
-                          <select value={form.goal}
+                          <select value={form.goal} title="Select your goal"
                             onChange={(e) => setForm((p) => ({ ...p, goal: e.target.value as "lose" | "maintain" | "gain" }))}
                             className="login-input appearance-none pr-8">
                             <option value="lose">Lose Weight</option>
@@ -298,12 +296,14 @@ const Profile = () => {
 
                     <div className="flex gap-2 pt-1">
                       <button
+                        type="button"
                         onClick={handleCancelEdit}
                         className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-sm font-semibold transition-all active:scale-95"
                       >
                         <X size={14} /> Cancel
                       </button>
                       <button
+                        type="button"
                         onClick={handleSave}
                         disabled={saving}
                         className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white text-sm font-semibold transition-all disabled:opacity-60 shadow-sm shadow-emerald-500/25"
@@ -408,6 +408,7 @@ const Profile = () => {
                 You're signed in as <span className="font-semibold text-slate-600 dark:text-slate-300">{displayName}</span>
               </p>
               <button
+                type="button"
                 onClick={handleLogout}
                 disabled={loggingOut}
                 className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-rose-200 dark:border-rose-500/30 bg-rose-50 dark:bg-rose-500/10 hover:bg-rose-100 dark:hover:bg-rose-500/20 active:scale-95 text-rose-600 dark:text-rose-400 text-sm font-semibold transition-all disabled:opacity-60"
