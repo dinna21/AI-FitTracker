@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAppContext } from "../context/AppContext"
 import toast from "react-hot-toast"
-import mockApi from "../assets/mockApi"
+import api from "../assets/api"
 import {
   User, Dumbbell, Target, ChevronRight, ChevronLeft,
   Activity, Flame, Zap, Wind, Heart, CheckCircle2,
@@ -31,7 +31,7 @@ const goalOptions = [
 const Onboarding = () => {
   const [step, setStep] = useState(1)
   const navigate = useNavigate()
-  const { setOnboardingCompleted, setUser } = useAppContext()
+  const { setOnboardingCompleted, setUser, user } = useAppContext()
   
   const [form, setForm] = useState({
     age: "",
@@ -86,8 +86,8 @@ const Onboarding = () => {
         dailyCalorieBurn: form.dailyCalorieBurn,
       }
 
-      const { data } = await mockApi.user.update("", payload)
-      setUser(data)
+      const { data } = await api.user.update(String(user?.id ?? ''), { ...payload, onboardingCompleted: true })
+      setUser((prev: any) => ({ ...prev, ...data }))
       toast.success("Profile saved! Welcome to FitTrack")
       setOnboardingCompleted(true)
       navigate("/")
@@ -243,6 +243,7 @@ const Onboarding = () => {
                       { label: "Female", Icon: Venus },
                     ].map(({ label, Icon }) => (
                       <button
+                        type="button"
                         key={label}
                         onClick={() => update("gender", label)}
                         className={`onboarding-option-btn flex items-center gap-2.5 py-3 px-4 justify-center transition-all duration-200
@@ -273,6 +274,7 @@ const Onboarding = () => {
                   const selected = form.activityLevel === a.label
                   return (
                     <button
+                      type="button"
                       key={a.label}
                       onClick={() => update("activityLevel", a.label)}
                       className={`onboarding-option-btn flex items-center gap-4 p-4 transition-all duration-200
@@ -308,6 +310,7 @@ const Onboarding = () => {
                     const selected = form.goal === g.label
                     return (
                       <button
+                        type="button"
                         key={g.label}
                         onClick={() => update("goal", g.label)}
                         className={`onboarding-option-btn flex items-center gap-4 p-4 transition-all duration-200
@@ -347,6 +350,7 @@ const Onboarding = () => {
                     </div>
                     <div className="relative">
                       <input
+                        title="Set your daily calorie intake target"
                         type="range"
                         min={1200}
                         max={4000}
@@ -376,6 +380,7 @@ const Onboarding = () => {
                     </div>
                     <div className="relative">
                       <input
+                        title="Set your daily calorie burn target"
                         type="range"
                         min={200}
                         max={1500}
@@ -402,6 +407,7 @@ const Onboarding = () => {
           <div className="flex gap-3 mt-8">
             {step > 1 && (
               <button
+                type="button"
                 onClick={back}
                 className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
               >
@@ -409,6 +415,7 @@ const Onboarding = () => {
               </button>
             )}
             <button
+              type="button"
               onClick={step === 3 ? handleSubmit : next}
               className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold shadow-lg shadow-emerald-500/25 transition-all duration-200"
             >
