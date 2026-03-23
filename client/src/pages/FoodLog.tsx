@@ -1,6 +1,6 @@
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useAppContext } from "../context/AppContext"
-import mockApi from "../assets/mockApi"
+import api from "../assets/api"
 import {
   Utensils, Plus, Trash2, X,
   Coffee, Sun, Moon, Cookie, Sparkles,
@@ -91,7 +91,7 @@ const FoodLog = () => {
     }
     setSubmitting(true)
     try {
-      const { data } = await mockApi.foodLogs.create({ data: { ...form, calories: Number(form.calories) } })
+      const { data } = await api.foodLogs.create({ data: { ...form, calories: Number(form.calories) } })
       setAllFoodLogs((prev) => [...prev, data])
       setForm({ name: "", calories: "", mealType: "breakfast" })
       setShowForm(false)
@@ -106,7 +106,7 @@ const FoodLog = () => {
   const handleDelete = async (documentId: string) => {
     setDeletingId(documentId)
     try {
-      await mockApi.foodLogs.delete(documentId)
+      await api.foodLogs.delete(documentId)
       setAllFoodLogs((prev) => prev.filter((f) => f.documentId !== documentId))
       toast.success("Entry removed")
     } catch {
@@ -116,10 +116,24 @@ const FoodLog = () => {
     }
   }
 
-  const handleAiSnap = async () => {
+  const handleAiSnap = async (file: File) => {
     setAiLoading(true)
     try {
-      const { data } = await mockApi.imageAnalysis.analyze({})
+      const reader = new FileReader()
+      const imageBase64 = await new Promise<string>((resolve, reject) => {
+        reader.onload = () => {
+          const result = reader.result as string
+          // Strip the data URL prefix (e.g. "data:image/jpeg;base64,")
+          resolve(result.split(",")[1])
+        }
+        reader.onerror = reject
+        reader.readAsDataURL(file)
+      })
+
+      const { data } = await api.imageAnalysis.analyze({
+        imageBase64,
+        mimeType: file.type || "image/jpeg",
+      })
       setForm((prev) => ({ ...prev, name: data.result.name, calories: String(data.result.calories) }))
       setShowAiForm(false)
       setShowForm(true)
@@ -134,6 +148,8 @@ const FoodLog = () => {
   const filtered = activeFilter === "all"
     ? mealOrder
     : mealOrder.filter((m) => m === activeFilter)
+
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   return (
     <div className="page-container">
@@ -190,6 +206,7 @@ const FoodLog = () => {
               const isActive = form.mealType === q.name && showForm
               return (
                 <button
+                  type="button"
                   key={q.name}
                   onClick={() => { setForm((p) => ({ ...p, mealType: q.name })); setShowForm(true); setShowAiForm(false) }}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all duration-200
@@ -207,12 +224,14 @@ const FoodLog = () => {
           {/* CTA buttons */}
           <div className="flex gap-2">
             <button
+              type="button"
               onClick={() => { setShowForm((p) => !p); setShowAiForm(false) }}
               className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white text-sm font-semibold transition-all shadow-sm shadow-emerald-500/25"
             >
               <Plus size={15} /> Add Entry
             </button>
             <button
+              type="button"
               onClick={() => { setShowAiForm((p) => !p); setShowForm(false) }}
               className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-violet-500 hover:bg-violet-600 active:scale-95 text-white text-sm font-semibold transition-all shadow-sm shadow-violet-500/25"
             >
@@ -227,6 +246,8 @@ const FoodLog = () => {
             <div className="flex items-center justify-between mb-4">
               <Label icon={Plus} text="New Entry" iconClass="text-emerald-500" />
               <button
+                title="Close Form"
+                type="button"
                 onClick={() => setShowForm(false)}
                 className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-200 transition-all -mt-3"
               >
@@ -268,6 +289,7 @@ const FoodLog = () => {
                   </label>
                   <div className="relative">
                     <select
+                    title="Select meal type"
                       value={form.mealType}
                       onChange={(e) => setForm((p) => ({ ...p, mealType: e.target.value }))}
                       className="login-input appearance-none pr-8"
@@ -301,12 +323,28 @@ const FoodLog = () => {
             <div className="flex items-center justify-between mb-4">
               <Label icon={Sparkles} text="AI Food Snap" iconClass="text-violet-500" />
               <button
+                title="Close Form"
+                type="button"
                 onClick={() => setShowAiForm(false)}
                 className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-200 transition-all -mt-3"
               >
                 <X size={14} />
               </button>
             </div>
+
+            {/* Hidden file input */}
+            <input
+              title="Select an image file"
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0]
+                if (file) handleAiSnap(file)
+                e.target.value = "" // reset so same file can be re-selected
+              }}
+            />
 
             <div className="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl p-8 flex flex-col items-center gap-3 text-center">
               <div className="w-11 h-11 rounded-2xl bg-violet-50 dark:bg-violet-500/10 flex items-center justify-center">
@@ -319,9 +357,11 @@ const FoodLog = () => {
                 </p>
               </div>
               <button
-                onClick={handleAiSnap}
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
                 disabled={aiLoading}
                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-violet-500 hover:bg-violet-600 active:scale-95 text-white text-sm font-semibold transition-all disabled:opacity-60 shadow-sm shadow-violet-500/25"
+                title="Snap Food"
               >
                 {aiLoading
                   ? <><Loader2 size={14} className="animate-spin" /> Analyzing...</>
@@ -336,6 +376,7 @@ const FoodLog = () => {
         <div className="flex gap-2 overflow-x-auto pb-0.5">
           {(["all", ...mealOrder] as const).map((tab) => (
             <button
+              type="button"
               key={tab}
               onClick={() => setActiveFilter(tab)}
               className={`shrink-0 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200
@@ -361,6 +402,7 @@ const FoodLog = () => {
             <Card key={meal} className="overflow-hidden">
               {/* Meal header row */}
               <button
+                type="button"
                 onClick={() => toggleMeal(meal)}
                 className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
               >
@@ -397,6 +439,7 @@ const FoodLog = () => {
                       </div>
                       <p className="text-xs text-slate-400 dark:text-slate-500">No {meal} logged yet</p>
                       <button
+                        type="button"
                         onClick={() => { setForm((p) => ({ ...p, mealType: meal })); setShowForm(true) }}
                         className="text-[11px] font-semibold text-emerald-500 hover:text-emerald-600 transition-colors flex items-center gap-1"
                       >
@@ -421,6 +464,7 @@ const FoodLog = () => {
                               <span className="text-[10px] font-normal text-slate-400 ml-0.5">kcal</span>
                             </span>
                             <button
+                              type="button"
                               onClick={() => item.documentId && handleDelete(item.documentId)}
                               disabled={deletingId === item.documentId}
                               className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-300 dark:text-slate-600 hover:bg-rose-50 dark:hover:bg-rose-500/10 hover:text-rose-500 transition-all opacity-0 group-hover:opacity-100 disabled:opacity-50"
