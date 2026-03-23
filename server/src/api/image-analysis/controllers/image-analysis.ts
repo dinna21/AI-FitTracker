@@ -8,13 +8,13 @@ export default {
             return ctx.unauthorized('You must be logged in to use image analysis');
         }
 
-        const { imageBase64, mimeType } = ctx.request.body as { imageBase64?: string; mimeType?: string };
-
-        if (!imageBase64) {
-            return ctx.badRequest('imageBase64 is required');
-        }
-
         try {
+            const { imageBase64, mimeType } = ctx.request.body as { imageBase64?: string; mimeType?: string };
+
+            if (!imageBase64) {
+                return ctx.badRequest('imageBase64 is required');
+            }
+
             const result = await analyzeFood(imageBase64, mimeType ?? 'image/jpeg');
             return ctx.send({ result });
         } catch (err) {

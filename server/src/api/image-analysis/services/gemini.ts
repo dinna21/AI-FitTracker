@@ -3,27 +3,30 @@ import { GoogleGenAI } from '@google/genai';
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export async function analyzeFood(imageBase64: string, mimeType: string = 'image/jpeg'): Promise<{ name: string; calories: number }> {
-    const contents = [
-        {
-            inlineData: {
-                mimeType,
-                data: imageBase64,
-            },
-        },
-        {
-            text: 'Identify this food item and estimate its calories for a typical serving. Respond with ONLY valid JSON in this exact format, no markdown, no explanation: {"name": "food name", "calories": 123}',
-        },
-    ];
-
     const response = await ai.models.generateContent({
-        model: 'gemini-2.0-flash',
-        contents,
+        model: 'gemini-1.5-flash',
+        contents: [
+            {
+                role: 'user',
+                parts: [
+                    { inlineData: { mimeType, data: imageBase64 } },
+                    { text: 'Identify this food item and estimate its calories for a typical serving. Respond with ONLY valid JSON in this exact format, no markdown, no explanation: {"name": "food name", "calories": 123}' },
+                ],
+            },
+        ],
     });
 
     const text = response.text ?? '';
 
-    // Strip markdown code fences if Gemini wraps the JSON anyway
-    const cleaned = text.replace(/```(?:json)?/g, '').trim();
+    if (!text) {
+        throw new Error('Empty response from Gemini');
+    }
 
-    return JSON.parse(cleaned) as { name: string; calories: number };
+    // Extract the first JSON object found (handles markdown fences and trailing text)
+    const jsonMatch = text.match(/\{[\s\S]*?\}/);
+    if (!jsonMatch) {
+        throw new Error(`No JSON in Gemini response: ${text.slice(0, 200)}`);
+    }
+
+    return JSON.parse(jsonMatch[0]) as { name: string; calories: number };
 }
