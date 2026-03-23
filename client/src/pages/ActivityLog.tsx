@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useAppContext } from "../context/AppContext"
-import mockApi from "../assets/mockApi"
+import api from "../assets/api"
 import {
   Activity, Plus, Trash2, X,
   Loader2, Clock, Flame,
@@ -84,7 +84,7 @@ const ActivityLog = () => {
     if (!form.name.trim() || !form.duration || !form.calories) { toast.error("Please fill all fields"); return }
     setSubmitting(true)
     try {
-      const { data } = await mockApi.activityLogs.create({ data: { name: form.name, duration: Number(form.duration), calories: Number(form.calories) } })
+      const { data } = await api.activityLogs.create({ data: { name: form.name, duration: Number(form.duration), calories: Number(form.calories) } })
       setAllActivityLogs((prev: ActivityEntry[]) => [...prev, data])
       setForm({ name: "", duration: "", calories: "" }); setShowForm(false); toast.success("Activity logged")
     } catch { toast.error("Failed to add activity") } finally { setSubmitting(false) }
@@ -92,7 +92,7 @@ const ActivityLog = () => {
   const handleDelete = async (documentId: string) => {
     setDeletingId(documentId)
     try {
-      await mockApi.activityLogs.delete(documentId)
+      await api.activityLogs.delete(documentId)
       setAllActivityLogs((prev: ActivityEntry[]) => prev.filter((a) => a.documentId !== documentId))
       toast.success("Activity removed")
     } catch { toast.error("Failed to delete") } finally { setDeletingId(null) }
@@ -146,7 +146,7 @@ const ActivityLog = () => {
                   const QIcon = activityIconMap[q.name] ?? Zap
                   const sel   = form.name === q.name && showForm
                   return (
-                    <button key={q.name} onClick={() => handleQuickAdd(q.name)}
+                    <button type="button" key={q.name} onClick={() => handleQuickAdd(q.name)}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all duration-200
                         ${sel
                           ? "bg-emerald-50 dark:bg-emerald-500/10 border-emerald-400 text-emerald-600 dark:text-emerald-400"
@@ -157,7 +157,7 @@ const ActivityLog = () => {
                   )
                 })}
               </div>
-              <button onClick={() => setShowForm((p) => !p)}
+              <button type="button" onClick={() => setShowForm((p) => !p)}
                 className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white text-sm font-semibold transition-all shadow-sm shadow-emerald-500/25">
                 <Plus size={15} /> Add Custom Activity
               </button>
@@ -168,7 +168,7 @@ const ActivityLog = () => {
               <Card className="p-4">
                 <div className="flex items-center justify-between mb-4">
                   <Label icon={Plus} text="New Activity" iconClass="text-emerald-500" />
-                  <button onClick={() => setShowForm(false)}
+                  <button title="Close Form" type="button" onClick={() => setShowForm(false)}
                     className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all -mt-3">
                     <X size={14} />
                   </button>
@@ -282,6 +282,7 @@ const ActivityLog = () => {
                           </p>
                         </div>
                         <button
+                          type="button"
                           onClick={() => item.documentId && handleDelete(item.documentId)}
                           disabled={deletingId === item.documentId}
                           className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-300 dark:text-slate-600 hover:bg-rose-50 dark:hover:bg-rose-500/10 hover:text-rose-500 transition-all opacity-0 group-hover:opacity-100 disabled:opacity-50">

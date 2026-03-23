@@ -1,4 +1,4 @@
-import React from 'react';
+import { useId } from 'react';
 import { ChevronDownIcon } from 'lucide-react';
 
 interface SelectOption {
@@ -14,21 +14,40 @@ interface SelectProps {
     className?: string;
     required?: boolean;
     placeholder?: string;
+    id?: string;
+    title?: string;
 }
 
-export default function Select({ label, value, onChange, options = [], className = '', required = false, placeholder = 'Select an option' }: SelectProps) {
+export default function Select({
+    label,
+    value,
+    onChange,
+    options = [],
+    className = '',
+    required = false,
+    placeholder = 'Select an option',
+    id,
+    title,
+}: SelectProps) {
+    const generatedId = useId();
+    const selectId = id ?? generatedId;
+    const accessibleTitle = title ?? label ?? placeholder;
+
     return (
         <div className={`space-y-2 ${className}`}>
             {label && (
-                <label className='block text-sm font-medium text-slate-700 dark:text-slate-300'>
+                <label htmlFor={selectId} className='block text-sm font-medium text-slate-700 dark:text-slate-300'>
                     {label}
                     {required && <span className='text-red-500 ml-1'>*</span>}
                 </label>
             )}
             <div className='relative'>
                 <select
+                    id={selectId}
+                    title={accessibleTitle}
+                    aria-label={label ? undefined : accessibleTitle}
                     value={value}
-                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onChange(e.target.value)}
+                    onChange={(e) => onChange(e.target.value)}
                     className='w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 cursor-pointer'
                 >
                     <option value='' disabled>

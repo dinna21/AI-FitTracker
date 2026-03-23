@@ -84,6 +84,7 @@ const Sidebar = () => {
         {/* Dark / Light Toggle — pinned to bottom */}
         <div className="px-3 py-4 border-t border-slate-100 dark:border-slate-800 shrink-0">
           <button
+            type="button"
             onClick={toggleTheme}
             className="
               w-full flex items-center gap-3 px-3 py-2.5 rounded-xl
@@ -173,6 +174,7 @@ const Sidebar = () => {
 
           {/* Theme toggle as 5th bottom nav item */}
           <button
+            type="button"
             onClick={toggleTheme}
             className="flex flex-col items-center gap-0.5 flex-1 py-1 group"
           >

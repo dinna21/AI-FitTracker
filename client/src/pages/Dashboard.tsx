@@ -4,9 +4,9 @@ import CaloriesChart from "../components/CaloriesChart"
 import { useAppContext } from "../context/AppContext"
 import {
   Flame, Utensils, Zap, TrendingUp, Plus,
-  Activity, Scale, Ruler, Target, Heart,
+  Activity, Scale, Ruler, Target,
   ChevronRight, Calendar, User, BarChart3,
-  ArrowUp, ArrowDown, Minus, Award,
+  ArrowUp, Award,
 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import {
@@ -23,39 +23,6 @@ import {
 function getDefaultTargets(age: number) {
   const range = ageRanges.find((r) => age <= r.max) ?? ageRanges[ageRanges.length - 1]
   return { intake: range.maintain, burn: range.burn }
-}
-
-function calcBMI(weight: number, heightCm: number) {
-  const h = heightCm / 100
-  return parseFloat((weight / (h * h)).toFixed(1))
-}
-
-function getBMICategory(bmi: number) {
-  if (bmi < 18.5) return { label: "Underweight", color: "text-sky-500",     fill: "#38bdf8", track: "#e0f2fe" }
-  if (bmi < 25)   return { label: "Healthy",     color: "text-emerald-500", fill: "#10b981", track: "#d1fae5" }
-  if (bmi < 30)   return { label: "Overweight",  color: "text-amber-500",   fill: "#f59e0b", track: "#fef3c7" }
-  return              { label: "Obese",          color: "text-rose-500",    fill: "#f43f5e", track: "#ffe4e6" }
-}
-
-/* ── Arc ring ── */
-function Ring({ value, max, size = 96, strokeW = 8, color = "#10b981" }: {
-  value: number; max: number; size?: number; strokeW?: number; color?: string
-}) {
-  const r    = (size - strokeW) / 2
-  const circ = 2 * Math.PI * r
-  const pct  = Math.min(value / max, 1)
-  return (
-    <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }} className="shrink-0">
-      <circle cx={size/2} cy={size/2} r={r} fill="none"
-        stroke="currentColor" strokeWidth={strokeW}
-        className="text-slate-100 dark:text-slate-800" />
-      <circle cx={size/2} cy={size/2} r={r} fill="none"
-        stroke={color} strokeWidth={strokeW}
-        strokeDasharray={`${pct * circ} ${circ}`}
-        strokeLinecap="round"
-        style={{ transition: "stroke-dasharray 1s cubic-bezier(.4,0,.2,1)" }} />
-    </svg>
-  )
 }
 
 /* ── Progress bar ── */
@@ -167,7 +134,6 @@ const Dashboard = () => {
   const caloriesConsumed = todayFood.reduce((s, f) => s + f.calories, 0)
   const caloriesBurned   = todayActivity.reduce((s, a) => s + a.calories, 0)
   const activeMinutes    = todayActivity.reduce((s, a) => s + a.duration, 0)
-  const netCalories      = caloriesConsumed - caloriesBurned
 
   /* week */
   const weekStats = useMemo(() => {
@@ -202,11 +168,6 @@ const Dashboard = () => {
     return getDefaultTargets(user?.age ?? 30)
   }, [user])
 
-  /* bmi */
-  const bmiVal = user?.weight && user?.height ? calcBMI(user.weight, user.height) : null
-  const bmiCat = bmiVal ? getBMICategory(bmiVal) : null
-  const bmiPct = bmiVal ? Math.min(((bmiVal - 10) / 30) * 100, 100) : 0
-
   /* misc */
   const motivation  = getMotivationalMessage(caloriesConsumed, activeMinutes, targets.intake)
   const goalLabel   = goalLabels[(user?.goal as keyof typeof goalLabels) ?? "maintain"]
@@ -214,9 +175,6 @@ const Dashboard = () => {
 
   const intakePct = (caloriesConsumed / targets.intake) * 100
   const burnPct   = (caloriesBurned   / targets.burn)   * 100
-
-  const netIcon = netCalories > 0 ? ArrowUp : netCalories < 0 ? ArrowDown : Minus
-  const NetIcon = netIcon
 
   /* active days this week — derived from existing weekStats */
   const activeDaysThisWeek = weekStats.filter(d => d.calories > 0 || d.burned > 0).length
@@ -393,6 +351,7 @@ const Dashboard = () => {
                 </span>
               </div>
               <button
+                type="button"
                 onClick={() => navigate("/profile")}
                 className="text-[10px] font-bold text-amber-500 hover:text-amber-600 transition-colors flex items-center gap-0.5"
               >
@@ -427,6 +386,7 @@ const Dashboard = () => {
             <div className="flex items-start justify-between mb-4">
               <Label icon={Utensils} text="Today's Meals" />
               <button
+                type="button"
                 onClick={() => navigate("/food")}
                 className="flex items-center gap-1.5 text-xs bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-emerald-600 active:scale-95 transition-all shadow-sm shadow-emerald-500/30 -mt-0.5"
               >
@@ -466,7 +426,7 @@ const Dashboard = () => {
                   )
                 })}
                 {todayFood.length > 4 && (
-                  <button onClick={() => navigate("/food")}
+                  <button type="button" onClick={() => navigate("/food")}
                     className="flex items-center justify-center gap-1 w-full text-xs text-emerald-500 font-semibold py-2 hover:text-emerald-600 transition-colors">
                     {todayFood.length - 4} more entries <ChevronRight size={12} />
                   </button>
@@ -482,6 +442,7 @@ const Dashboard = () => {
             <div className="flex items-start justify-between mb-4">
               <Label icon={Activity} text="Recent Activity" iconClass="text-orange-400" />
               <button
+                type="button"
                 onClick={() => navigate("/activity")}
                 className="flex items-center gap-1.5 text-xs bg-orange-500 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-orange-600 active:scale-95 transition-all shadow-sm shadow-orange-500/30 -mt-0.5"
               >
