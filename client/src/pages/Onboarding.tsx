@@ -90,7 +90,7 @@ const Onboarding = () => {
       setUser((prev: any) => ({ ...prev, ...data }))
       toast.success("Profile saved! Welcome to FitTrack")
       setOnboardingCompleted(true)
-      navigate("/")
+      navigate("/dashboard")
     } catch {
       toast.error("Failed to save profile")
     }
