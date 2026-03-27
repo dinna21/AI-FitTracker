@@ -180,7 +180,7 @@ const Dashboard = () => {
   const activeDaysThisWeek = weekStats.filter(d => d.calories > 0 || d.burned > 0).length
 
   return (
-    <div className="page-container bg-slate-950 text-white">
+    <div className="page-container landing-dashboard-bg text-white">
       {/* ══════ HEADER ══════ */}
       <div className="relative overflow-hidden rounded-b-[2.25rem] bg-[radial-gradient(circle_at_top_right,_#34d399_0%,_#10b981_45%,_#047857_100%)] px-5 pt-10 pb-12">
         <div className="absolute -top-16 -right-16 w-56 h-56 bg-white/10 rounded-full blur-3xl pointer-events-none" />

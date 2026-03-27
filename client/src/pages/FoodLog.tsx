@@ -152,41 +152,45 @@ const FoodLog = () => {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   return (
-    <div className="page-container">
+    <div className="page-container landing-dashboard-bg">
 
       {/* ══════ HEADER ══════ */}
-      <div className="page-header">
-        <div className="flex items-start justify-between mb-5 max-w-2xl mx-auto">
+      <div className="relative overflow-hidden rounded-b-[2.25rem] bg-[radial-gradient(circle_at_top_right,_#34d399_0%,_#10b981_45%,_#047857_100%)] px-5 pt-10 pb-12">
+        <div className="absolute -top-16 -right-16 w-56 h-56 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 -left-8 w-40 h-40 bg-emerald-300/15 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute bottom-4 right-4 w-28 h-28 bg-teal-300/10 rounded-full blur-2xl pointer-events-none" />
+
+        <div className="relative z-10 flex items-start justify-between mb-5 max-w-2xl mx-auto">
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-1">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-emerald-200/80 mb-1">
               Today
             </p>
-            <h1 className="text-xl font-bold text-slate-800 dark:text-white tracking-tight">Food Log</h1>
+            <h1 className="text-xl font-bold text-white tracking-tight">Food Log</h1>
           </div>
           <div className="text-right">
-            <p className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wide mb-0.5">Consumed</p>
-            <p className={`text-xl font-bold leading-none ${isOver ? "text-rose-500" : "text-emerald-500"}`}>
+            <p className="text-[10px] text-emerald-100/70 uppercase tracking-wide mb-0.5">Consumed</p>
+            <p className={`text-xl font-bold leading-none ${isOver ? "text-rose-200" : "text-white"}`}>
               {total.toLocaleString()}
-              <span className="text-xs font-normal text-slate-400 ml-1">kcal</span>
+              <span className="text-xs font-normal text-emerald-100/70 ml-1">kcal</span>
             </p>
           </div>
         </div>
 
         {/* Progress bar */}
-        <div className="max-w-2xl mx-auto">
+        <div className="relative z-10 max-w-2xl mx-auto">
           <div className="flex justify-between items-center mb-1.5">
-            <span className={`text-[11px] font-semibold ${isOver ? "text-rose-500" : "text-emerald-500"}`}>
+            <span className={`text-[11px] font-semibold ${isOver ? "text-rose-200" : "text-emerald-100"}`}>
               {isOver
                 ? `${(total - target).toLocaleString()} kcal over`
                 : `${(target - total).toLocaleString()} kcal remaining`}
             </span>
-            <span className="text-[11px] text-slate-400 dark:text-slate-500">
+            <span className="text-[11px] text-emerald-100/70">
               Target: {target.toLocaleString()} kcal
             </span>
           </div>
-          <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+          <div className="h-2 bg-white/20 rounded-full overflow-hidden">
             <div
-              className={`h-full rounded-full transition-all duration-700 ${isOver ? "bg-rose-500" : "bg-emerald-500"}`}
+              className={`h-full rounded-full transition-all duration-700 ${isOver ? "bg-rose-300" : "bg-white"}`}
               style={{ width: `${pct}%` }}
             />
           </div>
@@ -194,7 +198,7 @@ const FoodLog = () => {
       </div>
 
       {/* ══════ CONTENT ══════ */}
-      <div className="px-4 py-5 space-y-4 max-w-2xl mx-auto lg:px-6">
+      <div className="px-4 py-5 -mt-4 space-y-4 max-w-2xl mx-auto lg:px-6 relative z-10">
 
         {/* ── ACTIONS ── */}
         <Card className="p-4">

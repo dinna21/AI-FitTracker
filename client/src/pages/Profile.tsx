@@ -166,21 +166,25 @@ const Profile = () => {
   }
 
   return (
-    <div className="page-container">
+    <div className="page-container landing-dashboard-bg">
 
       {/* ══════ HEADER ══════ */}
-      <div className="page-header">
-        <div className="flex items-start justify-between max-w-5xl mx-auto">
+      <div className="relative overflow-hidden rounded-b-[2.25rem] bg-[radial-gradient(circle_at_top_right,_#34d399_0%,_#10b981_45%,_#047857_100%)] px-5 pt-10 pb-12">
+        <div className="absolute -top-16 -right-16 w-56 h-56 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 -left-8 w-40 h-40 bg-emerald-300/15 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute bottom-4 right-4 w-28 h-28 bg-teal-300/10 rounded-full blur-2xl pointer-events-none" />
+
+        <div className="relative z-10 flex items-start justify-between max-w-5xl mx-auto">
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-1">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-emerald-200/80 mb-1">
               Account
             </p>
-            <h1 className="text-xl font-bold text-slate-800 dark:text-white tracking-tight">Profile</h1>
-            <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">Manage your settings</p>
+            <h1 className="text-xl font-bold text-white tracking-tight">Profile</h1>
+            <p className="text-xs text-emerald-100/70 mt-0.5">Manage your settings</p>
           </div>
 
           {/* Avatar in header */}
-          <div className="w-11 h-11 rounded-2xl bg-emerald-500 flex items-center justify-center shadow-md shadow-emerald-500/30 shrink-0">
+          <div className="w-11 h-11 rounded-2xl bg-white/15 border border-white/20 flex items-center justify-center backdrop-blur-sm shrink-0">
             <span className="text-white font-bold text-base leading-none">
               {displayName.charAt(0).toUpperCase()}
             </span>
@@ -192,7 +196,7 @@ const Profile = () => {
           Mobile : single column
           Desktop: LEFT = profile info + edit | RIGHT = stats + logout
       ══════ */}
-      <div className="px-4 py-5 max-w-5xl mx-auto lg:px-6 lg:pt-6 lg:pb-10">
+      <div className="px-4 py-5 -mt-4 max-w-5xl mx-auto lg:px-6 lg:pt-6 lg:pb-10 relative z-10">
         <div className="flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:gap-5 lg:items-start">
 
           {/* ══ LEFT COLUMN ══ */}
