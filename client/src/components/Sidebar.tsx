@@ -3,7 +3,7 @@ import { NavLink, useLocation } from "react-router-dom"
 import { useTheme } from "../context/ThemeContext"
 
 const navItems = [
-  { label: "Home",     path: "/",         icon: HomeIcon },
+  { label: "Home",     path: "/dashboard", icon: HomeIcon },
   { label: "Food",     path: "/food",      icon: UtensilsIcon },
   { label: "Activity", path: "/activity",  icon: ActivityIcon },
   { label: "Profile",  path: "/profile",   icon: UserIcon },
