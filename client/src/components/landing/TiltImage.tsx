@@ -1,4 +1,4 @@
-import { useRef, useState, type MouseEvent } from "react"
+import { useRef, type MouseEvent } from "react"
 import { motion, useSpring } from "motion/react"
 
 type TiltImageProps = {
@@ -16,8 +16,6 @@ export default function TiltImage({ rotateAmplitude = 4 }: TiltImageProps) {
   const rotateX = useSpring(0, springValues)
   const rotateY = useSpring(0, springValues)
 
-  const [lastY, setLastY] = useState(0)
-
   function handleMouseMove(e: MouseEvent<HTMLDivElement>) {
     if (!ref.current) return
 
@@ -30,14 +28,11 @@ export default function TiltImage({ rotateAmplitude = 4 }: TiltImageProps) {
 
     rotateX.set(nextRotateX)
     rotateY.set(nextRotateY)
-
-    setLastY(offsetY)
   }
 
   function handleMouseLeave() {
     rotateX.set(0)
     rotateY.set(0)
-    setLastY(0)
   }
 
   return (
