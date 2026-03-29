@@ -40,16 +40,40 @@ export default function Footer() {
             Build healthier habits with a product experience users actually enjoy opening every day.
           </p>
           <div className="mt-2 flex items-center gap-4">
-            <a href="https://dribbble.com" target="_blank" rel="noreferrer">
+            <a
+              href="https://dribbble.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Visit our Dribbble profile"
+              title="Dribbble"
+            >
               <DribbbleIcon className="size-5 hover:text-emerald-500" />
             </a>
-            <a href="https://linkedin.com" target="_blank" rel="noreferrer">
+            <a
+              href="https://linkedin.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Visit our LinkedIn page"
+              title="LinkedIn"
+            >
               <LinkedinIcon className="size-5 hover:text-emerald-500" />
             </a>
-            <a href="https://x.com" target="_blank" rel="noreferrer">
+            <a
+              href="https://x.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Visit our X profile"
+              title="X"
+            >
               <TwitterIcon className="size-5 hover:text-emerald-500" />
             </a>
-            <a href="https://youtube.com" target="_blank" rel="noreferrer">
+            <a
+              href="https://youtube.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Visit our YouTube channel"
+              title="YouTube"
+            >
               <YoutubeIcon className="size-5 hover:text-emerald-500" />
             </a>
           </div>
