@@ -13,6 +13,7 @@ export default ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Middlewar
   ];
 
   const allowedOrigins = Array.from(new Set([...defaultOrigins, ...configuredOrigins]));
+  const vercelPreviewPattern = /^https:\/\/ai-fit-tracker-[a-z0-9-]+\.vercel\.app$/i;
 
   return [
     'strapi::logger',
@@ -21,7 +22,15 @@ export default ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Middlewar
     {
       name: 'strapi::cors',
       config: {
-        origin: allowedOrigins,
+        origin: (ctx) => {
+          const requestOrigin = ctx.request.header.origin;
+
+          if (!requestOrigin) return '*';
+          if (allowedOrigins.includes(requestOrigin)) return requestOrigin;
+          if (vercelPreviewPattern.test(requestOrigin)) return requestOrigin;
+
+          return '';
+        },
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
         headers: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
         keepHeaderOnError: true,
