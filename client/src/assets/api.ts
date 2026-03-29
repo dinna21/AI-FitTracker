@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:1337'
+const BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:1337').replace(/\/+$/, '')
 
 function getToken() {
   return localStorage.getItem('token')
@@ -8,8 +8,9 @@ async function request<T = unknown>(method: string, path: string, body?: unknown
   const headers: Record<string, string> = { 'Content-Type': 'application/json' }
   const token = getToken()
   if (token) headers['Authorization'] = `Bearer ${token}`
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`
 
-  const res = await fetch(`${BASE_URL}${path}`, {
+  const res = await fetch(`${BASE_URL}${normalizedPath}`, {
     method,
     headers,
     body: body !== undefined ? JSON.stringify(body) : undefined,
