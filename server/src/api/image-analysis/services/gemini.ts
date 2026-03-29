@@ -1,8 +1,18 @@
 import { GoogleGenAI } from '@google/genai';
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+function getAiClient(): GoogleGenAI {
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    if (!apiKey) {
+        throw new Error('GEMINI_API_KEY is not configured');
+    }
+
+    return new GoogleGenAI({ apiKey });
+}
 
 export async function analyzeFood(imageBase64: string, mimeType: string = 'image/jpeg'): Promise<{ name: string; calories: number }> {
+    const ai = getAiClient();
+
     const response = await ai.models.generateContent({
         model: 'gemini-1.5-flash',
         contents: [
