@@ -22,7 +22,8 @@ export default ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Middlewar
     {
       name: 'strapi::cors',
       config: {
-        origin: (requestOrigin: string) => {
+        origin: (ctx) => {
+          const requestOrigin = ctx.request.header.origin;
           if (!requestOrigin) return requestOrigin;
           if (allowedOrigins.includes(requestOrigin)) return requestOrigin;
           if (vercelPreviewPattern.test(requestOrigin)) return requestOrigin;
