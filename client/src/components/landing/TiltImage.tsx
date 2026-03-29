@@ -52,12 +52,15 @@ export default function TiltImage({ rotateAmplitude = 4 }: TiltImageProps) {
       >
         <img
           src="/images/hero.png"
-          className="h-105 w-full rounded-2xl object-cover"
+          className="aspect-4/5 w-full rounded-2xl object-cover sm:aspect-3/2 md:aspect-video"
           alt="Team collaborating around a laptop"
+          onError={(event) => {
+            event.currentTarget.src = "https://placehold.co/1200x800/0b132b/e5e7eb?text=FitTracker+Hero"
+          }}
         />
-        <div className="absolute bottom-8 left-1/2 w-[82%] -translate-x-1/2 rounded-2xl bg-emerald-500 px-5 py-4 text-white shadow-lg shadow-emerald-500/40">
-          <p className="text-lg font-semibold">Used by 1,000+ fitness coaches</p>
-          <p className="text-sm text-emerald-50">4.9 average rating across onboarding teams</p>
+        <div className="absolute bottom-4 left-1/2 w-[90%] -translate-x-1/2 rounded-2xl bg-emerald-500 px-4 py-3 text-white shadow-lg shadow-emerald-500/40 sm:bottom-8 sm:w-[82%] sm:px-5 sm:py-4">
+          <p className="text-base font-semibold sm:text-lg">Used by 1,000+ fitness coaches</p>
+          <p className="text-xs text-emerald-50 sm:text-sm">4.9 average rating across onboarding teams</p>
         </div>
       </motion.div>
     </motion.figure>

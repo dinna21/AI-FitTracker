@@ -14,7 +14,7 @@ export default function FeaturesSection() {
 					subtitle="Everything you need to monitor your meals, activities, and daily progress in one place."
 				/>
 
-				<div className="mt-14 grid grid-cols-1 gap-4 md:grid-cols-3">
+				<div className="mt-10 grid grid-cols-1 gap-4 md:mt-14 md:grid-cols-3">
 					{featuresData.map((feature, index) => {
 						const Icon = icons[index] ?? Sparkles
 						return (
@@ -38,7 +38,7 @@ export default function FeaturesSection() {
 					})}
 				</div>
 
-				<div className="relative mx-auto mt-28 max-w-5xl">
+				<div className="relative mx-auto mt-14 max-w-5xl md:mt-28">
 					<div className="absolute -left-24 -top-12 -z-10 size-96 rounded-full bg-emerald-500/20 blur-3xl" />
 
 					{/* <motion.p
@@ -61,9 +61,12 @@ export default function FeaturesSection() {
 						>
 							<img
 								className="h-full w-full rounded-3xl border border-emerald-500/30 object-cover shadow-xl shadow-emerald-500/10"
-								src="/images/featured.png"   // 👈 replace with your generated image
+								src="/images/featured.png"
 								alt="Health score dashboard preview"
 								loading="lazy"
+								onError={(event) => {
+									event.currentTarget.src = "https://placehold.co/1200x900/0b132b/e5e7eb?text=Featured+Preview"
+								}}
 							/>
 						</motion.div>
 
@@ -75,10 +78,13 @@ export default function FeaturesSection() {
 							transition={{ delay: 0.08, type: "spring", stiffness: 220, damping: 24 }}
 						>
 							<img
-								src="/images/featured2.png"  // 👈 replace with your generated image
+								src="/images/featured2.png"
 								alt="Goal tracking and progress preview"
 								loading="lazy"
-								className="h-60 w-full rounded-2xl border border-slate-200 object-cover transition duration-300 hover:-translate-y-0.5 dark:border-slate-800"
+								className="aspect-4/5 w-full rounded-2xl border border-slate-200 object-cover transition duration-300 hover:-translate-y-0.5 dark:border-slate-800 sm:aspect-3/4 md:h-60 md:aspect-auto"
+								onError={(event) => {
+									event.currentTarget.src = "https://placehold.co/800x1000/0b132b/e5e7eb?text=Progress+Preview"
+								}}
 							/>
 
 							<h3 className="mt-6 text-2xl font-semibold text-slate-800 dark:text-slate-100">

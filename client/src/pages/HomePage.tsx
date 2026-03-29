@@ -10,7 +10,7 @@ import TestimonialSection from "../sections/TestimonialSection"
 
 export default function HomePage() {
   return (
-    <div className="landing-dashboard-bg min-h-screen overflow-x-hidden pb-20 pt-8 md:pt-10">
+    <div className="landing-dashboard-bg min-h-screen overflow-x-hidden pb-16 pt-16 md:pb-20 md:pt-20">
       <LenisScroll />
       <Navbar />
       <HeroSection />

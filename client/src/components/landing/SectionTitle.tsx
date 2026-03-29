@@ -9,7 +9,7 @@ export default function SectionTitle({ title, subtitle }: SectionTitleProps) {
   return (
     <>
       <motion.h2
-        className="mx-auto mt-20 max-w-2xl text-center text-3xl font-bold tracking-tight text-slate-900 dark:text-white md:text-4xl"
+        className="mx-auto mt-10 max-w-2xl text-center text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:mt-14 md:mt-20 md:text-4xl"
         initial={{ y: 60, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         viewport={{ once: true }}

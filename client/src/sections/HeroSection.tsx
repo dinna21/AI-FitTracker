@@ -51,7 +51,7 @@ function StaticHero({ onGetStarted }: { onGetStarted: () => void }) {
   const chapter = chapters[0]
 
   return (
-    <section className="relative overflow-hidden px-4 pb-8 pt-6 md:px-10">
+    <section className="relative overflow-hidden px-4 pb-8 pt-2 md:px-10">
       <div className="pointer-events-none absolute left-1/2 top-0 -z-10 size-130 -translate-x-1/2 rounded-full bg-emerald-500/20 blur-3xl" />
 
       <div className="mx-auto max-w-6xl text-center">
@@ -71,7 +71,7 @@ function StaticHero({ onGetStarted }: { onGetStarted: () => void }) {
         </motion.button>
 
         <motion.h1
-          className="mx-auto mt-8 max-w-3xl text-4xl font-bold tracking-tight text-slate-900 dark:text-white md:text-6xl"
+          className="mx-auto mt-6 max-w-3xl text-4xl font-bold tracking-tight text-slate-900 dark:text-white md:mt-8 md:text-6xl"
           initial={{ y: 30, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           viewport={{ once: true }}
@@ -110,7 +110,7 @@ function StaticHero({ onGetStarted }: { onGetStarted: () => void }) {
           </button>
         </motion.div>
 
-        <div className="mt-10 flex flex-wrap justify-center gap-5">
+        <div className="mt-8 flex flex-wrap justify-center gap-4 md:mt-10 md:gap-5">
           {chapter.bullets.map((item, index) => (
             <motion.p
               key={item}
@@ -155,8 +155,8 @@ export default function HeroSection() {
     setActiveChapter((prev) => (prev === nextChapter ? prev : nextChapter))
   })
 
-  const stageScale = useTransform(smoothProgress, [0, 1], [1, 0.94])
-  const stageY = useTransform(smoothProgress, [0, 1], [0, -18])
+  const stageScale = useTransform(smoothProgress, [0, 1], [1, 0.965])
+  const stageY = useTransform(smoothProgress, [0, 1], [0, -10])
   const glowOpacity = useTransform(smoothProgress, [0, 0.7, 1], [0.7, 0.95, 0.5])
 
   const chapter = chapters[activeChapter]
@@ -166,18 +166,18 @@ export default function HeroSection() {
   }
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden px-4 pb-2 pt-2 md:px-10 md:pt-3">
+    <section ref={sectionRef} className="relative overflow-hidden px-4 pb-4 pt-2 md:px-10 md:pb-2 md:pt-3">
       <motion.div
         className="pointer-events-none absolute left-1/2 top-4 -z-10 size-130 -translate-x-1/2 rounded-full bg-emerald-500/20 blur-3xl"
         style={{ opacity: glowOpacity }}
       />
 
-      <div className="mx-auto h-[112vh] max-w-6xl md:h-[124vh]">
+      <div className="mx-auto h-[96vh] max-w-6xl sm:h-[104vh] md:h-[124vh]">
         <motion.div
-          className="sticky top-16 flex min-h-[64vh] items-start py-1 md:min-h-[68vh]"
+          className="sticky top-20 flex min-h-[56vh] items-start py-2 md:top-16 md:min-h-[68vh] md:py-1"
           style={{ scale: stageScale, y: stageY }}
         >
-          <div className="grid w-full gap-8 rounded-4xl border border-emerald-300/20 bg-white/70 p-5 backdrop-blur-xl dark:bg-slate-900/55 md:grid-cols-[1.05fr_1fr] md:gap-10 md:p-8">
+          <div className="grid w-full gap-6 rounded-4xl border border-emerald-300/20 bg-white/70 p-4 backdrop-blur-xl dark:bg-slate-900/55 sm:p-5 md:grid-cols-[1.05fr_1fr] md:gap-10 md:p-8">
             <div className="text-left">
               <motion.button
                 type="button"
@@ -193,11 +193,11 @@ export default function HeroSection() {
                 </span>
               </motion.button>
 
-              <div className="mt-7 flex items-center gap-3">
+              <div className="mt-5 flex items-center gap-2.5 md:mt-7 md:gap-3">
                 {chapters.map((item, index) => (
                   <div key={item.eyebrow} className="flex items-center gap-3">
                     <motion.span
-                      className="h-1.5 w-8 rounded-full"
+                      className="h-1.5 w-6 rounded-full md:w-8"
                       animate={{
                         backgroundColor: index <= activeChapter ? "rgba(16, 185, 129, 1)" : "rgba(148, 163, 184, 0.35)",
                         opacity: index === activeChapter ? 1 : 0.8,
@@ -215,17 +215,17 @@ export default function HeroSection() {
                   exit={{ opacity: 0, y: -16 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <p className="mt-7 text-xs font-semibold tracking-[0.22em] text-emerald-600 dark:text-emerald-300">
+                  <p className="mt-6 text-xs font-semibold tracking-[0.2em] text-emerald-600 dark:text-emerald-300 md:mt-7 md:tracking-[0.22em]">
                     {chapter.eyebrow}
                   </p>
 
-                  <h1 className="mt-3 max-w-2xl text-3xl font-bold tracking-tight text-slate-900 dark:text-white md:text-5xl">
+                  <h1 className="mt-3 max-w-2xl text-[2rem] leading-[1.1] font-bold tracking-tight text-slate-900 dark:text-white md:text-5xl">
                     {chapter.title}
                   </h1>
 
-                  <p className="mt-5 max-w-xl text-slate-600 dark:text-slate-300">{chapter.description}</p>
+                  <p className="mt-4 max-w-xl text-slate-600 dark:text-slate-300 md:mt-5">{chapter.description}</p>
 
-                  <div className="mt-7 flex flex-wrap gap-4">
+                  <div className="mt-6 flex flex-wrap gap-3 md:mt-7 md:gap-4">
                     {chapter.bullets.map((item, index) => (
                       <motion.p
                         key={item}
@@ -240,7 +240,7 @@ export default function HeroSection() {
                     ))}
                   </div>
 
-                  <div className="mt-8 flex flex-wrap items-center gap-3">
+                  <div className="mt-7 flex flex-wrap items-center gap-3 md:mt-8">
                     <button
                       type="button"
                       onClick={() => navigate("/login")}

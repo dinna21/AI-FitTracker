@@ -18,7 +18,7 @@ export default function Navbar() {
   return (
     <>
       <motion.nav
-        className="fixed left-1/2 top-4 z-[60] flex w-[min(1120px,95%)] -translate-x-1/2 items-center justify-between rounded-2xl border border-slate-200/70 bg-white/75 px-5 py-3 backdrop-blur-xl dark:border-slate-800/70 dark:bg-slate-900/70 md:px-8"
+        className="fixed left-1/2 top-2 z-60 flex w-[calc(100%-1rem)] max-w-6xl -translate-x-1/2 items-center justify-between rounded-2xl border border-slate-200/70 bg-white/75 px-4 py-2.5 backdrop-blur-xl dark:border-slate-800/70 dark:bg-slate-900/70 sm:top-4 sm:px-5 sm:py-3 md:px-8"
         initial={{ y: -40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: "spring", stiffness: 220, damping: 22 }}
